@@ -19,7 +19,7 @@ TCP和基于TCP的协议常用端口包括：20/21（FTP，文件传输协议）
 
 ####为什么是三次？
 简明版：要确认双方的SYN包和ACK包都被对方接收到，服务端的ACK包可以同时是SYN包，故至少需要三次**成功**发送包。  
-详细版：（TODO） 
+详细版：（TODO）  
 ###四次挥手
 ![avatar](Disconnection_TCP.png)  
 <font color=gray><center>[图源网络]</center></font>    
