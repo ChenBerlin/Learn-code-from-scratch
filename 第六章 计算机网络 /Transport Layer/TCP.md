@@ -46,23 +46,37 @@ TCP的起源最早可以追溯到二十世纪六十年代至七十年代。1970�
 
 ```
 data_size = value; //初始化传输数据大小
-if(data_size <= threshold) {  //当传输数据大小小于网络阈值时
-	data_size += a  // 传输数据大小加性增长
-} else {   //当传输数据大小大于网络阈值时
-	data_size = data_size / b;  // 传输数据大小乘性降低
+while (keep_alive) {  // 在连接存活期间
+	if(data_size <= threshold) {  //当传输数据大小 <= 网络阈值时
+		data_size += a  // 传输数据大小加性增长
+	} else {   //当传输数据大小 > 网络阈值时
+		data_size = data_size / b;  // 传输数据大小乘性降低
+	}
 }
 ```
 在TCP中，加性增长参数a通常为每个RTT一个MSS，而乘性降低因子b通常为1/2。TCP探测网络达到拥堵是通过超时重传机制，当发送端连续收到三个ACK为x的包时，便认为此时网络达到了拥堵状态，发送完序号为x的包后便会进入乘性降低。
 ![avatar](pic/Single_Stream_AIMD.png)  
 <font color=gray><center>[图源网络]</center></font>    
-在路由拥有缓存的前提下采用AIMD算法，尽管发送端传输效率不是一直100%，但是路由端的传输效率能一直达到100%。（具体分析和图待补充）  
+在路由拥有缓存的前提下采用AIMD算法，单条TCP连接时尽管发送端传输效率不是一直100%，但是路由端的传输效率能一直达到100%。（具体分析和图待补充)    
+
 #### 多条TCP连接下的AIMD
+
+在存在多条TCP连接的情况下，`公平性`和`收敛性`就显得格外重要。假设网络带宽为10M，client A先建立了一条TCP连接，此时A独享全部带宽。后来加入的client B也建立了一条TCP连接。由于B的加入导致A的网络带宽被分走部分，A和B均发生了丢包。丢包时，假设A占用带宽为8M，B占用带宽为2M。当A、B察觉到丢包时，各自传输速率减半（MD），分别降为4M和1M，然后重新进入加性增长（AI）阶段。假设加性增长参数为100K，那么第一次增长便为A4.1M、B1.1M，直至再次进入MD阶段。  
+
+一段时间后会发现A和B的占用带宽几乎相同，且逐渐收敛。  
+
+##### 思考：如果是MIMD或者AIAD算法呢？（待完善）
+
+思路：MI易拥堵，传输效率没有AI高；AD无法收敛到公平。  
+
 #### TCP Tahoe
 1981年的TCP-Tahoe  
 point1: 有限状态机 两种状态慢开始和拥塞避免  
 point2: 慢开始（slow-start）：指数增长 拥塞避免（congestion avoidance）：ssthreshold = ssthreshold/2，重新进入慢开始
+
 #### TCP Reno
 point1: 快恢复  
 point2: 快速重传  
+
 #### TCP New Reno
 改进了TCP Reno的快速恢复算法
