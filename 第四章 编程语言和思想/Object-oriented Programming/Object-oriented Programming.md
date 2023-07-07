@@ -6,9 +6,9 @@
 
 ```java
 public class Apple {
-	String color;
-  double weight;
-  int sweet;
+    String color;
+    double weight;
+    int sweet;
 }
 ```
 
