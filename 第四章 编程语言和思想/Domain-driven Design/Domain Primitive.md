@@ -31,29 +31,29 @@ public class RegistrationServiceImpl implements RegistrationService {
     private SalesRepository salesRepo;
     private UserRepository userRepo;
 
-	public User register(String name, String phone) throws ValidationException {
-		// 校验逻辑
-		if (name == null || name.length() == 0) {
-				throw new ValidationException("name");
-		}
-		if (phone == null || !isValidPhoneNumber(phone)) {
-				throw new ValidationException("phone");
-		}
+    public User register(String name, String phone) throws ValidationException {
+        // 校验逻辑
+        if (name == null || name.length() == 0) {
+            throw new ValidationException("name");
+        }
+        if (phone == null || !isValidPhoneNumber(phone)) {
+            throw new ValidationException("phone");
+        }
 
-		// 取电话号里的区号，然后通过区号找到区域内的Sales
-		String areaCode = getAreaCode(phone);
-		Sales sales = salesRepo.find(areaCode);
+        // 取电话号里的区号，然后通过区号找到区域内的Sales
+        String areaCode = getAreaCode(phone);
+        Sales sales = salesRepo.find(areaCode);
 
-		// 最后创建用户，落库然后返回
-		User user = new User();
-		user.setUsername(name);
-    user.setPhone(phone);
-		if (sales != null) {
-			user.setSalesId(sales.getId());
-		}
+        // 最后创建用户，落库然后返回
+        User user = new User();
+        user.setUsername(name);
+        user.setPhone(phone);
+        if (sales != null) {
+            user.setSalesId(sales.getId());
+        }
 
-		return userRepo.save(user);
-	}
+        return userRepo.save(user);
+    }
 
     /**
      * 获取电话区号
